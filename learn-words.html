@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        * {
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
+
+        #words-list {
+            cursor: pointer;  
+        }
+    </style>
+</head>
+<body>
+    
+    <ul id="words-list"></ul>
+
+    <button id="new-button" type="button">new</button>
+
+    <script>
+        var wordsList = document.getElementById("words-list");
+        var newButton = document.getElementById("new-button");
+
+        for (let i = window.localStorage.length-1; i >= 0; i--) {
+            var word = window.localStorage.key(i);
+            updateWord(word);
+        }
+
+        function updateWord(word) {
+            var li = document.createElement("li");
+            li.innerText = word;
+            wordsList.prepend(li);
+
+            li.ondblclick = () => {
+                if (confirm("Deleting " + li.innerText)) {
+                    window.localStorage.removeItem(word);
+                    li.remove();
+                }
+            }
+        }
+
+        newButton.onclick = () => {
+            var word = prompt();
+
+            if (word) {
+                window.localStorage.setItem(word, "")
+                updateWord(word);
+            }
+        }
+    </script>
+</body>
+</html>
