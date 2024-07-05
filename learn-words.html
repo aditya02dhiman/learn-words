@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn Words</title>
+
+    <style>
+        * {
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
+
+        ul {
+            cursor: pointer;  
+        }
+    </style>
+</head>
+<body>
+
+    <button id="new-button" type="button">New word</button>
+    <div id="lists-box"></div>
+    
+    <script>
+        var newButton = document.getElementById("new-button");
+        var listsBox = document.getElementById("lists-box");
+        
+        var datesList = JSON.parse(window.localStorage.getItem("dates-list")) || [];
+
+        for (let key of datesList) {
+            let wordsList = JSON.parse(window.localStorage.getItem(key));
+
+            let wordsListElem = document.createElement("ul");
+            
+            let h1 = document.createElement("h1");
+            h1.innerText = key;
+            listsBox.appendChild(h1);
+
+            for (let word of wordsList) {
+                let li = document.createElement("li");
+                li.innerText = word;
+
+                wordsListElem.prepend(li);
+                
+                li.ondblclick = () => {
+                    if (confirm(`Deleting "${li.innerText}"`)) {
+                        let wordsList = JSON.parse(window.localStorage.getItem(key));
+
+                        wordsList.splice(wordsList.indexOf(word), 1);
+
+                        if (wordsList.length) {
+                            window.localStorage.setItem(key, JSON.stringify(wordsList));
+                        }
+                        else {
+                            window.localStorage.removeItem(key);
+                            datesList.splice(datesList.indexOf(key));
+                            window.localStorage.setItem("dates-list", JSON.stringify(datesList));
+                        }
+
+                        li.remove();
+                        window.location.reload();
+                    }
+                }
+            }
+
+            listsBox.appendChild(wordsListElem);
+        }
+
+        newButton.onclick = () => {
+            let word = prompt().trim();
+
+            if (word) {
+                let key = new Date().toLocaleDateString("en-IN");
+
+                if (!datesList.includes(key)) {
+                    datesList.push(key);
+                    window.localStorage.setItem("dates-list", JSON.stringify(datesList));
+                }
+
+                let wordsList = JSON.parse(window.localStorage.getItem(key)) || [];
+                wordsList.push(word);
+                window.localStorage.setItem(key, JSON.stringify(wordsList));
+
+                window.location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
