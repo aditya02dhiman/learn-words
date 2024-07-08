@@ -72,7 +72,7 @@
                 let key = new Date().toLocaleDateString("en-IN");
 
                 if (!datesList.includes(key)) {
-                    datesList.push(key);
+                    datesList.unshift(key);
                     window.localStorage.setItem("dates-list", JSON.stringify(datesList));
                 }
 
